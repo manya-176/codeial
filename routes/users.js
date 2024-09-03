@@ -9,7 +9,7 @@ router.get('/sign-up',usersController.signUp);
 router.get('/sign-in',usersController.signIn);
 
 router.post('/create',usersController.create);   //bcz form mein we have used post method
-
+router.post('/create-session',usersController.createSession); 
 
 module.exports=router;
  

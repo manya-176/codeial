@@ -1,12 +1,28 @@
 //importing our model
 const User=require('../models/user');
 
-module.exports.profile=function(req,res){
-    return res.render('user_profile', {
-        title:'user Profile'
-    });
-    
-}
+
+module.exports.profile = async function(req, res) {
+    try {
+        // Check if user_id cookie exists
+        if (req.cookies.user_id) {
+            const user = await User.findById(req.cookies.user_id).exec();
+            if (user) {
+                return res.render('user_profile', {
+                    title: "User Profile",
+                    user: user
+                });
+            } else {
+                return res.redirect('/users/sign-in');
+            }
+        } else {
+            return res.redirect('/users/sign-in');
+        }
+    } catch (err) {
+        console.error('Error finding user:', err);
+        return res.redirect('/users/sign-in');
+    }
+};
 
 
 //render the sign up page
@@ -55,8 +71,22 @@ module.exports.create = async (req, res) => {
 
 
 //sign in and create a session for user
-module.exports.createSession=function(req,res){
-    //todo later
-}
+module.exports.createSession = async function(req, res) {
+    try {
+        const user = await User.findOne({ email: req.body.email });
 
+        if (user) {
+            if (user.password !== req.body.password) {
+                return res.redirect('back');
+            }
 
+            res.cookie('user_id', user.id);
+            return res.redirect('/users/profile');
+        } else {
+            return res.redirect('back');
+        }
+    } catch (err) {
+        console.error('Error in finding user during sign in:', err);
+        return res.redirect('back');
+    }
+};
