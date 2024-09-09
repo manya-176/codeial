@@ -2,6 +2,7 @@
 const User=require('../models/user');
 
 
+//to render user details on profile page after sign-in
 module.exports.profile = async function(req, res) {
     try {
         // Check if user_id cookie exists
@@ -59,7 +60,7 @@ module.exports.create = async (req, res) => {
             return res.redirect('/users/sign-in');
         } else {
             // Redirect back if a user already exists with the given email
-            return res.redirect('/users/sign-in');
+            return res.redirect('/users/sign-up');
         }
     } catch (err) {
         // Log the error and send an appropriate response
@@ -72,21 +73,22 @@ module.exports.create = async (req, res) => {
 
 //sign in and create a session for user
 module.exports.createSession = async function(req, res) {
-    try {
-        const user = await User.findOne({ email: req.body.email });
+    //removing it once as we are learning passport
+    // try {
+    //     const user = await User.findOne({ email: req.body.email });
 
-        if (user) {
-            if (user.password !== req.body.password) {
-                return res.redirect('back');
-            }
+    //     if (user) {
+    //         if (user.password !== req.body.password) {
+    //             return res.redirect('back');
+    //         }
 
-            res.cookie('user_id', user.id);
-            return res.redirect('/users/profile');
-        } else {
-            return res.redirect('back');
-        }
-    } catch (err) {
-        console.error('Error in finding user during sign in:', err);
-        return res.redirect('back');
-    }
+    //         res.cookie('user_id', user.id);
+    //         return res.redirect('/users/profile');
+    //     } else {
+    //         return res.redirect('back');
+    //     }
+    // } catch (err) {
+    //     console.error('Error in finding user during sign in:', err);
+    //     return res.redirect('back');
+    // }
 };
