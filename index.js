@@ -28,13 +28,16 @@ app.set('views','./views');
 app.use(session({
     name:'codeial',
     //TODO change the secret before deployment
-    secret:'balhsomething',
+    secret:'blahsomething',
     saveUninitialized:false,
     resave:false,
     cookie:{
-        maxAge:(100*60*100)
+        maxAge:(1000 *60*100)//minutes in milliseconds
     }
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 app.listen(port, function(err){
