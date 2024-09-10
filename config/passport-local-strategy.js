@@ -1,48 +1,48 @@
-const passport=require('passport');
-
-const LocalStrategy=require('passport-local').Strategy;
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const User = require('../models/user');
 
-//we need to tell passport to use LocalStrategy that we have created
-//authentication using passport
+// Authentication using Passport
 passport.use(new LocalStrategy({
-        usernameField:'email'
+        usernameField: 'email'
     },
-    function(email,password,done){
-        //find a user and establish the identity
-        User.findOne({email:email }, function(err,user){
-            if(err){
-                console.log('error in finding user-->passport');
-                return done(err);
+    async function(email, password, done) {
+        try {
+            // Find the user by email
+            const user = await User.findOne({ email: email }).exec();
+
+            if (!user || user.password !== password) {
+                console.log('Invalid username/password');
+                return done(null, false); // No error, but user not found
             }
 
-            if(!user||user.password!=password){
-                console.log('invalid username/password');
-                return done(null,false);//error is null but user not found so false
-            }
-
-            return done(null, user);
-        })
+            return done(null, user); // Authentication successful
+        } catch (err) {
+            console.log('Error in finding user --> passport');
+            return done(err); // Pass the error to done
+        }
     }
-
 ));
 
-//serializing the user to decide which key is to be kept in the cookie
-passport.serializeUser(function(user,done){
-    done(err,user.id);
+// Serializing the user to decide which key is to be kept in the cookie
+passport.serializeUser(function(user, done) {
+    done(null, user.id); // Use null for error argument
 });
 
-//deserializing the user from the key in the cookies
-passport.deserializeUser(function(id,done){
-    User.findById(id, function(err,user){
-        if(err){
-            console.log('error in finding user');
-            return done(err);
+// Deserializing the user from the key in the cookies
+passport.deserializeUser(async function(id, done) {
+    try {
+        const user = await User.findById(id).exec();
+
+        if (user) {
+            return done(null, user); // Successful deserialization
+        } else {
+            return done(new Error('User not found')); // User not found
         }
-
-        return done(null,user);
-    });
+    } catch (err) {
+        console.log('Error in finding user');
+        return done(err); // Pass the error to done
+    }
 });
 
-module.exports=passport;
-
+module.exports = passport;

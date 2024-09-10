@@ -15,10 +15,6 @@ app.use(cookieParser());
 
 app.use(express.static('./assets'));
 
-
-//use express router
-app.use('/',require('./routes'));
-
 //setting up view engine, ejs
 app.set('view engine','ejs');
 app.set('views','./views');
@@ -38,6 +34,10 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+//use express router
+app.use('/',require('./routes'));
 
 
 app.listen(port, function(err){

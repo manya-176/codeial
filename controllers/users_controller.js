@@ -51,7 +51,7 @@ module.exports.create = async (req, res) => {
         }
 
         // Check if a user with the given email already exists
-        const existingUser = await User.findOne({ email: req.body.email });
+        const existingUser = await User.findOne({ email: req.body.email }).exec(); //using exec() to return a promise
 
         if (!existingUser) {
             // Create a new user if none exists with the given email
@@ -72,7 +72,7 @@ module.exports.create = async (req, res) => {
 
 
 //sign in and create a session for user
-module.exports.createSession = async function(req, res) {
+// module.exports.createSession = async function(req, res) {
     //removing it once as we are learning passport
     // try {
     //     const user = await User.findOne({ email: req.body.email });
@@ -91,4 +91,9 @@ module.exports.createSession = async function(req, res) {
     //     console.error('Error in finding user during sign in:', err);
     //     return res.redirect('back');
     // }
-};
+// };
+
+//sign-in w passport.js 
+module.exports.createSession = async function(req, res){
+    return res.redirect('/');
+}
