@@ -25,8 +25,8 @@ app.use(session({
     name:'codeial',
     //TODO change the secret before deployment
     secret:'blahsomething',
-    saveUninitialized:false,
-    resave:false,
+    saveUninitialized:false,  //dont save the data when the user has not logged in
+    resave:false, //if ther is no change in user data do not resave it
     cookie:{
         maxAge:(1000 *60*100)//minutes in milliseconds
     }
@@ -34,6 +34,8 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(passport.setAuthenticatedUser);
 
 
 //use express router
