@@ -40,7 +40,7 @@ passport.deserializeUser(async function(id, done) {
             return done(new Error('User not found')); // User not found
         }
     } catch (err) {
-        console.log('Error in finding user');
+        console.log('Error in finding user--> Passport');
         return done(err); // Pass the error to done
     }
 }); 

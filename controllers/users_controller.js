@@ -3,31 +3,41 @@ const User=require('../models/user');
 
 
 //to render user details on profile page after sign-in
-module.exports.profile = async function(req, res) {
-    try {
-        // Check if user_id cookie exists
-        if (req.cookies.user_id) {
-            const user = await User.findById(req.cookies.user_id).exec();
-            if (user) {
-                return res.render('user_profile', {
-                    title: "User Profile",
-                    user: user
-                });
-            } else {
-                return res.redirect('/users/sign-in');
-            }
-        } else {
-            return res.redirect('/users/sign-in');
-        }
-    } catch (err) {
-        console.error('Error finding user:', err);
-        return res.redirect('/users/sign-in');
-    }
-};
+// module.exports.profile = async function(req, res) {
+//     try {
+//         // Check if user_id cookie exists
+//         if (req.cookies.user_id) {
+//             const user = await User.findById(req.cookies.user_id).exec();
+//             if (user) {
+//                 return res.render('user_profile', {
+//                     title: "User Profile",
+//                     user: user
+//                 });
+//             } else {
+//                 return res.redirect('/users/sign-in');
+//             }
+//         } else {
+//             return res.redirect('/users/sign-in');
+//         }
+//     } catch (err) {
+//         console.error('Error finding user:', err);
+//         return res.redirect('/users/sign-in');
+//     }
+// };
 
+
+module.exports.profile = function(req, res){
+    return res.render('user_profile', {
+        title: 'User Profile'
+    })
+}
 
 //render the sign up page
 module.exports.signUp=function(req,res){
+    if(req.isAuthenticated()){
+        res.redirect('/users/profile');
+    }
+
     return res.render('user_sign_up',{
         title:"codeial | Sign up"
     });
@@ -36,6 +46,10 @@ module.exports.signUp=function(req,res){
 
 //render the sign in page
 module.exports.signIn=function(req,res){
+    if(req.isAuthenticated()){
+        res.redirect('/users/profile');
+    }
+
     return res.render('user_sign_in',{
         title:"codeial | Sign In"
     });
