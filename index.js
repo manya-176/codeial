@@ -9,6 +9,7 @@ const db=require('./config/mongoose');
 const session=require('express-session');
 const passport=require('passport');
 const passportLocal=require('./config/passport-local-strategy');
+const MongoStore= require('connect-mongo'); 
 
 // const sassMiddleware=require('node-sass-middleware');
 
@@ -37,6 +38,7 @@ app.set('views','./views');
 // app.set('views', path.join(__dirname, 'views'));
 
 
+//mongo store is used to store session in the db
 app.use(session({
     name:'codeial',
     //TODO change the secret before deployment
@@ -45,7 +47,17 @@ app.use(session({
     resave:false, //if ther is no change in user data do not resave it
     cookie:{
         maxAge:(1000 *60*100)//minutes in milliseconds
-    }
+    },
+    //to store session permanently
+    store: new MongoStore(
+        {
+            mongoUrl: 'mongodb://localhost/codeial', //mongoDB url
+            autoRemove:'disabled'
+        },
+        function(err){
+            console.log(err || 'connect-mongo setup ok');
+        }
+    )
 }));
 
 app.use(passport.initialize());
