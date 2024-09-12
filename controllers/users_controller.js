@@ -111,3 +111,12 @@ module.exports.create = async (req, res) => {
 module.exports.createSession = async function(req, res){
     return res.redirect('/');
 }
+
+module.exports.destroySession = function(req, res, next) {
+    req.logout((err) => {
+        if (err) {
+            return next(err);
+        }
+        return res.redirect('/'); 
+    });
+};
